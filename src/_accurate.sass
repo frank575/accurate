@@ -1,6 +1,6 @@
 // 取小數點第幾位
 @function _decimal($number)
-  @if $EXACT
+  @if $exact
     @return $number
   @else
     $n: 1
@@ -12,14 +12,14 @@
 
 // 初始化設定
 $DOCUMENT_WIDTH: 1920 // 外
-$scaleWidth: 1366 // 內(可以被 W() 汙染更改)
+$scaleWidth: 1920 // 內(可以被 W() 汙染更改)
 $ORIGIN_SCALE_WIDTH: $scaleWidth // 內原始寬
 $IMG_LOCAL: 'https://drive.google.com/uc?id=' // 圖片路徑
 $IMG_TYPE: '.png' // 圖片類型
 $HAS_SCROLLBAR: true // 設計稿是否有滾動條
-$EXACT: false // 尺寸是否絕對精確
+$exact: false // 尺寸是否絕對精確
 $SCALE: _decimal($ORIGIN_SCALE_WIDTH / $DOCUMENT_WIDTH) // 比例尺
-$IS_HALF: false // 是否半版，用來決定文字大小壓縮比例
+$IS_FONT_SCALE: false // 是否壓縮文字大小
 
 
 
@@ -54,7 +54,7 @@ $aniName: ani-name
     $i: $index !global
     +ty($i)
       @content
-// 寬度重置及汙染
+// 寬度重置及汙染，不建議使用
 @function W($width)
   $scaleWidth: $width !global
   @return $width
@@ -111,7 +111,7 @@ $aniName: ani-name
   // origin: $fontSize + 9
   line-height: ($lineHeight * $SCALE) + px
 =ls($letterSpacing)
-  @if $IS_HALF
+  @if $IS_FONT_SCALE
     letter-spacing: ($letterSpacing * 0.013) + px
   @else
     letter-spacing: ($letterSpacing * 0.02) + px
@@ -206,20 +206,20 @@ $aniName: ani-name
     height: $height
     @content
 // 圖片型		
-=imgb($name, $imgWidth, $imgHeight, $type: $IMG_TYPE)
+=imgb($imgName, $imgWidth, $imgHeight, $type: $IMG_TYPE)
   &::before
     content: ""
     display: inline-block
-    background: url + '(' + $IMG_LOCAL + $name + $type + ')'no-repeat
+    background: url + '(' + $IMG_LOCAL + $imgName + $type + ')'no-repeat
     width: imgw($imgWidth)
     height: imgw($imgHeight)
     background-size: 100% 100%
     @content
-=imga($name, $imgWidth, $imgHeight, $type: $IMG_TYPE)
+=imga($imgName, $imgWidth, $imgHeight, $type: $IMG_TYPE)
   &::after
     content: ""
     display: inline-block
-    background: url + '(' + $IMG_LOCAL + $name + $type + ')'no-repeat
+    background: url + '(' + $IMG_LOCAL + $imgName + $type + ')'no-repeat
     width: imgw($imgWidth)
     height: imgw($imgHeight)
     background-size: 100% 100%
@@ -290,8 +290,8 @@ $aniName: ani-name
 =bgh($thisWidth, $normalWidth, $normalHeight, $documentWidth: $scaleWidth)
   height: _decimal(($documentWidth / 100) * ((($normalHeight * ($thisWidth / $normalWidth))/ ($documentWidth / 100)) / ($documentWidth / 100))) + vw
 // 背景圖片
-=bgimg($bgImg, $type: $IMG_TYPE, $bgImgData...)
-  background: url + '(' + $IMG_LOCAL + $bgImg + $type + ')'$bgImgData
+=bgimg($imgName, $type: $IMG_TYPE, $imgOtherData...)
+  background: url + '(' + $IMG_LOCAL + $imgName + $type + ')'$imgOtherData
 // 簡單線性漸層
 =gradient($bgGradientDirectionMain, $bgGradientData...)
   background: linear-gradient(to $bgGradientDirectionMain, $bgGradientData)
@@ -302,6 +302,8 @@ $aniName: ani-name
 // 寬度佈局
 =w($selfWidth, $parentWidth: $scaleWidth)
   width: _decimal(($selfWidth / ($parentWidth / 100))) * 1%
+@function w($paddingWidth, $outSize: $scaleWidth)
+  @return _decimal($paddingWidth / ($outSize / 100)) * 1%
 // 均分推右邊(child版本)
 =prch($num, $selfWidth, $parentWidth: $scaleWidth)
   &:not(:nth-child#{'(' + $num + 'n)'})
@@ -310,9 +312,6 @@ $aniName: ani-name
 =prty($num, $selfWidth, $parentWidth: $scaleWidth)
   &:not(:nth-of-type#{'(' + $num + 'n)'})
     margin-right: _decimal((($parentWidth - ($selfWidth * $num)) / ($num - 1)) / ($parentWidth / 100)) * 1%
-// padding / margin-> %
-@function p($paddingWidth, $outSize: $scaleWidth)
-  @return _decimal($paddingWidth / ($outSize / 100)) * 1%
 // vw, vh推距離(預設為1366*974->1920*1080電腦)
 @function vw($paddingWidth, $documentWidth: $scaleWidth)
   @return _decimal(($paddingWidth / ($documentWidth / 100))) + vw
