@@ -1,0 +1,377 @@
+// 取小數點第幾位
+@function _decimal($number)
+  @if $EXACT
+    @return $number
+  @else
+    $n: 1
+    @for $i from 1 through 2
+        $n: $n * 10
+    @return floor($number * $n) / $n
+      
+      
+      
+// 初始化設定
+$DOCUMENT_WIDTH: 1920 // 外
+$scaleWidth: 1366 // 內(會被 W() 汙染)
+$ORIGIN_SCALE_WIDTH: $scaleWidth // 內原始寬
+$IMG_LOCAL: 'https://drive.google.com/uc?id=' // 圖片路徑
+$IMG_TYPE: '.png' // 圖片類型
+$HAS_SCROLLBAR: true // 設計稿是否有滾動條
+$EXACT: false // 是否絕對精確
+$SCALE: _decimal($ORIGIN_SCALE_WIDTH / $DOCUMENT_WIDTH) // 比例尺
+  
+
+
+// 個別尺寸, 註bt$xl=1200
+$xl: 1200
+$lg: 992
+$md: 768
+$sm: 576
+$ss: 320
+@if $HAS_SCROLLBAR == true
+  $scaleWidth: $scaleWidth - 17
+  
+  
+  
+// 全域汙染區塊
+$i: 1
+$aniTime: 60 // 單位 s
+$aniName: ani-name
+// for loop
+=for($to, $from: 1)
+  @for $index from $from through $to
+    $i: $index !global
+    @content
+// 以下兩個無汙染
+=forc($to, $from: 1)
+  @for $index from $from through $to
+    $i: $index !global
+    +ch($i)
+      @content
+=fort($to, $from: 1)
+  @for $index from $from through $to
+    $i: $index !global
+    +ty($i)
+      @content
+// 寬度重置及汙染
+@function W($width)
+  $scaleWidth: $width !global
+  @return $width
+=RE()
+  $scaleWidth: $ORIGIN_SCALE_WIDTH !global
+// 動畫函數
+// 聲明 keyframes
+=kf($name: $aniName, $time: 60)
+  $aniName: $name !global
+  $aniTime: $time !global
+  @keyframes #{$name}
+    @content
+// keyframe 時間軸
+@function t($second: $aniTime)
+  @return _decimal($second / $aniTime * 100) + %
+// 如果只有一個動畫且 kf 方法聲明在頂部，直接調用 +ani 即可
+=ani($duration: ease, $stopOrIni: infinite)
+  animation: $aniName $aniTime + s $duration $stopOrIni
+
+
+  
+// media系列
+// 響應式網頁設計 Responsive Website Design
+=rwd($rwd-max-width: $md) 
+  @media screen and (max-width: $rwd-max-width + px)
+    @content
+=rwdmin($rwd-min-width: $md + 1)
+  @media screen and (min-width: $rwd-min-width + px)
+    @content
+=rwdminmax($rwd-min-width: $sm + 1, $rwd-max-width: $md) 
+  @media screen and (min-width: $rwd-min-width + px) and (max-width: $rwd-max-width + px)
+    @content
+
+    
+    
+// 判斷是否有 hover 事件 (不建議使用)
+=hover
+  @media not all and (hover: none), (-ms-high-contrast: none)
+    &:hover
+      @content
+
+    
+
+// 取得顏色
+@function getColor($color, $index: 1)
+  @return nth($color, $index)
+
+
+
+// 文字系列
+// 全版文字
+=f1($fontSize, $line-height: $fontSize + 9, $color: #000, $letter-spacing: 0, $font-weight: 4)
+  font-size: ($fontSize * $SCALE) + px
+  line-height: ($line-height * $SCALE) + px
+  letter-spacing: ($letter-spacing * 0.013) + px
+  color: $color
+  font-weight: ($font-weight) * 100
+// 半版文字
+=f2($fontSize, $line-height: $fontSize + 9, $color: #000, $letter-spacing: 0, $font-weight: 4)
+  font-size: ($fontSize * 1) + px
+  line-height: ($line-height * 1) + px
+  letter-spacing: ($letter-spacing * 0.02) + px
+  color: $color
+  font-weight: ($font-weight) * 100
+// 半版文字 -> 簡短
+=f3($fontSize, $line-height: $fontSize + 9)
+  font-size: ($fontSize * 1) + px
+  line-height: ($line-height * 1) + px
+
+  
+  
+// 子選擇器
+// child
+=ch($child)
+  &:nth-child#{'(' + $child + ')'}
+    @content
+=nch($child)
+  &:not(:nth-child#{'(' + $child + ')'})
+    @content
+=fch
+  &:first-child
+    @content
+=nfch
+  &:not(:first-child)
+    @content
+=lch
+  &:last-child
+    @content
+=nlch
+  &:not(:last-child)
+    @content
+=douch($child1, $child2)
+  &:nth-child#{'(n + ' + $child1 + ')'}:nth-child#{'(-n + ' + $child2 + ')'}
+    @content
+// of-type
+=ty($type)
+  &:nth-of-type#{'(' + $type + ')'}
+    @content
+=nty($type)
+  &:not(:nth-of-type#{'(' + $type + ')'})
+    @content
+=fty
+  &:first-of-type
+    @content
+=nfty
+  &:not(:first-of-type)
+    @content
+=lty
+  &:last-of-type
+    @content
+=nlty
+  &:not(:last-of-type)
+    @content
+=douty($type1, $type2)
+  &:nth-of-type#{'(n + ' + $type1 + ')'}:nth-of-type#{'(-n + ' + $type2 + ')'}
+    @content
+
+
+
+// before/ after
+// 特別款: 啥都沒有
+=b
+  &::before
+    content: ""
+    display: inline-block
+    @content
+=a
+  &::after
+    content: ""
+    display: inline-block
+    @content
+// 文字型
+=btxt($text)
+  &::before
+    content: "#{$text}"
+    display: inline-block
+    @content
+=atxt($text)
+  &::after
+    content: "#{$text}"
+    display: inline-block
+    @content
+// 背景型
+=bbg($bg-color, $width, $height)
+  &::before
+    content: ""
+    display: inline-block
+    background-color: $bg-color
+    width: $width
+    height: $height
+    @content
+=abg($bg-color, $width, $height)
+  &::after 
+    content: ""
+    display: inline-block
+    background-color: $bg-color
+    width: $width
+    height: $height
+    @content
+// 圖片型		
+=imgb($name, $img-width, $img-height, $type: $IMG_TYPE)
+  &::before
+    content: ""
+    display: inline-block
+    background: url + '(' + $IMG_LOCAL + $name + $type + ')'no-repeat
+    width: imgw($img-width)
+    height: imgw($img-height)
+    background-size: 100% 100%
+    @content
+=imga($name, $img-width, $img-height, $type: $IMG_TYPE)
+  &::after
+    content: ""
+    display: inline-block
+    background: url + '(' + $IMG_LOCAL + $name + $type + ')'no-repeat
+    width: imgw($img-width)
+    height: imgw($img-height)
+    background-size: 100% 100%
+    @content
+
+
+
+// border箭頭
+=arrow($direction, $color, $topWidth, $rightWidth: $topWidth, $bottomWidth: $topWidth, $leftWidth: $topWidth)
+  position: absolute
+  @if $direction == right
+    border-top: $topWidth#{px} solid transparent
+    border-right: $rightWidth#{px} solid transparent
+    border-bottom: $bottomWidth#{px} solid transparent
+    border-left: $leftWidth#{px} solid $color
+  @if $direction == left
+    border-top: $topWidth#{px} solid transparent
+    border-right: $rightWidth#{px} solid $color
+    border-bottom: $bottomWidth#{px} solid transparent
+    border-left: $leftWidth#{px} solid transparent
+  @if $direction == top
+    border-top: $topWidth#{px} solid transparent
+    border-right: $rightWidth#{px} solid transparent
+    border-bottom: $bottomWidth#{px} solid $color
+    border-left: $leftWidth#{px} solid transparent
+  @if $direction == bottom
+    border-top: $topWidth#{px} solid $color
+    border-right: $rightWidth#{px} solid transparent
+    border-bottom: $bottomWidth#{px} solid transparent
+    border-left: $leftWidth#{px} solid transparent
+
+
+
+// 圖片系列
+// 有父層的圖片預設樣式
+=img
+  img
+    width: 100%
+    display: block 
+// 圖片寬度fnc與mixin
+@function imgw($img-size)
+  @if $scaleWidth == 1366
+    @return _decimal(($img-size * $SCALE)) + px
+  @else
+    @return $img-size + px
+=imgw($img-size)
+  @if $scaleWidth == 1366
+    width: _decimal($img-size * $SCALE) + px
+  @else
+    width: $img-size + px
+// 圖片盒子高度設定(預設圖片置中置中)，下在img的前一層，使圖片大小等比縮放
+// <html> e.g. .img>img
+=coverimg($thisWidth, $normalImageWidth, $normalImageHeight)
+  padding-top: ($thisWidth / ($normalImageWidth / $normalImageHeight)) / ($thisWidth / 100) * 1%
+  width: 100%
+  margin: 0 auto
+  overflow: hidden
+  position: relative
+  object-fit: cover
+  img
+    position: absolute
+    left: 50%
+    top: 50%
+    width: 100%
+    height: 100%
+    transform: translate(-50%,-50%)
+// 背景圖片高度判定 $scaleWidth-> 瀏覽器寬度
+=bgh($thisWidth, $normalWidth, $normalHeight, $document-width: $scaleWidth)
+  height: _decimal(($document-width / 100) * ((($normalHeight * ($thisWidth / $normalWidth))/ ($document-width / 100)) / ($document-width / 100))) + vw
+// 背景圖片
+=bgimg($bg-img, $type: $IMG_TYPE, $bg-img-data...)
+  background: url + '(' + $IMG_LOCAL + $bg-img + $type + ')'$bg-img-data
+// 簡單線性漸層
+=gradient($bg-gradient-direction-main, $bg-gradient-data...)
+  background: linear-gradient(to $bg-gradient-direction-main,$bg-gradient-data)
+
+  
+  
+// 切版佈局 $size-> 己寬, $out-size-> 父寬, $num-> 數量
+// 寬度佈局
+=w($selfWidth, $parentWidth: $scaleWidth)
+  width: _decimal(($selfWidth / ($parentWidth / 100))) * 1%
+// 均分推右邊(child版本)
+=prch($num, $selfWidth, $parentWidth: $scaleWidth)
+  &:not(:nth-child#{'(' + $num + 'n)'})
+    margin-right: _decimal((($parentWidth - ($selfWidth * $num)) / ($num - 1)) / ($parentWidth / 100)) * 1%
+// 均分推右邊(child版本)
+=prty($num, $selfWidth, $parentWidth: $scaleWidth)
+  &:not(:nth-of-type#{'(' + $num + 'n)'})
+    margin-right: _decimal((($parentWidth - ($selfWidth * $num)) / ($num - 1)) / ($parentWidth / 100)) * 1%
+// padding / margin-> %
+@function p($paddingWidth, $out-size: $scaleWidth)
+  @return _decimal($paddingWidth / ($out-size / 100)) * 1%
+// vw, vh推距離(預設為1366*974->1920*1080電腦)
+@function vw($paddingWidth, $document-width: $scaleWidth)
+  @return _decimal(($paddingWidth / ($document-width / 100))) + vw
+// vh
+@function vh($paddingHeight, $document-height: 974)
+  @return _decimal(($paddingHeight / ($document-height / 100))) + vh
+// 兩欄取寬
+=rw($lw) 
+  width: calc(100% - #{($lw) + px})
+@function rw($lw) 
+  @return calc(100% - #{($lw) + px})
+
+
+
+// absolute定位
+// 上下左右置中
+=pc($posType: absolute)
+  position: $posType
+  left: 50%
+  top: 50%
+  transform: translate(-50%, -50%)
+=plc($posType: absolute)
+  position: $posType
+  left: 50%
+  transform: translateX(-50%)
+=prc($posType: absolute)
+  position: $posType
+  right: 50%
+  transform: translateX(50%)
+=ptc($posType: absolute)
+  position: $posType
+  top: 50%
+  transform: translateY(-50%)
+=pbc($posType: absolute)
+  position: $posType
+  bottom: 50%
+  transform: translateY(50%)
+
+
+
+// 漸層文字
+=gradientText($color)
+  background: $color
+  -webkit-background-clip: text
+  -webkit-text-fill-color: transparent
+
+  
+  
+// 漸層文字框線
+=gradientTextStroke($color, $strokeWidth: 2, $textFillColor: #fff)
+  background: $color
+  -webkit-text-fill-color: $textFillColor
+  -webkit-text-stroke: $strokeWidth transparent
+  -webkit-background-clip: text
