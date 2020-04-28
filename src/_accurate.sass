@@ -7,19 +7,19 @@
     @for $i from 1 through 2
         $n: $n * 10
     @return floor($number * $n) / $n
-      
-      
-      
+
+
+
 // 初始化設定
 $DOCUMENT_WIDTH: 1920 // 外
-$scaleWidth: 1366 // 內(會被 W() 汙染)
+$scaleWidth: 1366 // 內(可以被 W() 汙染更改)
 $ORIGIN_SCALE_WIDTH: $scaleWidth // 內原始寬
 $IMG_LOCAL: 'https://drive.google.com/uc?id=' // 圖片路徑
 $IMG_TYPE: '.png' // 圖片類型
 $HAS_SCROLLBAR: true // 設計稿是否有滾動條
-$EXACT: false // 是否絕對精確
+$EXACT: false // 尺寸是否絕對精確
 $SCALE: _decimal($ORIGIN_SCALE_WIDTH / $DOCUMENT_WIDTH) // 比例尺
-  
+
 
 
 // 個別尺寸, 註bt$xl=1200
@@ -30,9 +30,9 @@ $sm: 576
 $ss: 320
 @if $HAS_SCROLLBAR == true
   $scaleWidth: $scaleWidth - 17
-  
-  
-  
+
+
+
 // 全域汙染區塊
 $i: 1
 $aniTime: 60 // 單位 s
@@ -43,12 +43,12 @@ $aniName: ani-name
     $i: $index !global
     @content
 // 以下兩個無汙染
-=forc($to, $from: 1)
+=forch($to, $from: 1)
   @for $index from $from through $to
     $i: $index !global
     +ch($i)
       @content
-=fort($to, $from: 1)
+=forty($to, $from: 1)
   @for $index from $from through $to
     $i: $index !global
     +ty($i)
@@ -74,7 +74,7 @@ $aniName: ani-name
   animation: $aniName $aniTime + s $duration $stopOrIni
 
 
-  
+
 // media系列
 // 響應式網頁設計 Responsive Website Design
 =rwd($rwd-max-width: $md) 
@@ -87,15 +87,15 @@ $aniName: ani-name
   @media screen and (min-width: $rwd-min-width + px) and (max-width: $rwd-max-width + px)
     @content
 
-    
-    
+
+
 // 判斷是否有 hover 事件 (不建議使用)
 =hover
   @media not all and (hover: none), (-ms-high-contrast: none)
     &:hover
       @content
 
-    
+
 
 // 取得顏色
 @function getColor($color, $index: 1)
@@ -123,8 +123,8 @@ $aniName: ani-name
   font-size: ($fontSize * 1) + px
   line-height: ($line-height * 1) + px
 
-  
-  
+
+
 // 子選擇器
 // child
 =ch($child)
@@ -304,8 +304,8 @@ $aniName: ani-name
 =gradient($bg-gradient-direction-main, $bg-gradient-data...)
   background: linear-gradient(to $bg-gradient-direction-main,$bg-gradient-data)
 
-  
-  
+
+
 // 切版佈局 $size-> 己寬, $out-size-> 父寬, $num-> 數量
 // 寬度佈局
 =w($selfWidth, $parentWidth: $scaleWidth)
@@ -367,8 +367,8 @@ $aniName: ani-name
   -webkit-background-clip: text
   -webkit-text-fill-color: transparent
 
-  
-  
+
+
 // 漸層文字框線
 =gradientTextStroke($color, $strokeWidth: 2, $textFillColor: #fff)
   background: $color
