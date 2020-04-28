@@ -68,7 +68,7 @@ $aniName: ani-name
     @content
 // keyframe 時間軸
 @function t($second: $aniTime)
-  @return _decimal($second / $aniTime * 100) + %
+  @return _decimal($second / $aniTime * 100)#{'%'}
 // 如果只有一個動畫且 kf 方法聲明在頂部，直接調用 +ani 即可
 =ani($duration: ease, $stopOrIni: infinite)
   animation: $aniName $aniTime + s $duration $stopOrIni
