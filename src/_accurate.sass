@@ -296,17 +296,21 @@ $aniName: ani-name
 =coverImg($thisWidth, $normalImageWidth, $normalImageHeight)
   padding-top: ($thisWidth / ($normalImageWidth / $normalImageHeight)) / ($thisWidth / 100) * 1%
   width: 100%
-  margin: 0 auto
-  overflow: hidden
   position: relative
-  object-fit: cover
   img
+    object-fit: cover
     position: absolute
-    left: 50%
-    top: 50%
+    left: 0
+    top: 0
     width: 100%
     height: 100%
-    transform: translate(-50%,-50%)
+=coverCubeImg($cubeSize)
+  width: $cubeSize
+  height: $cubeSize
+  img
+    object-fit: cover
+    width: 100%
+    height: 100%
 // 背景圖片高度判定 $scaleWidth-> 瀏覽器寬度
 =bgH($thisWidth, $documentWidth, $normalWidth, $normalHeight)
   height: _decimal(($documentWidth / 100) * ((($normalHeight * ($thisWidth / $normalWidth))/ ($documentWidth / 100)) / ($documentWidth / 100))) + vw
