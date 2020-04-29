@@ -2,7 +2,7 @@
 
 [詳細語法教學/範例盡在 codepen](https://codepen.io/frank575/pen/MWwqqgm?editors=1000)
 
-> 準確快速的數據驅動 sass 庫 
+> 準確快速的響應式數據驅動 sass 庫 
 (scss, styled-component 雙版本皆棄更(冗長))
 
 ## 優勢
