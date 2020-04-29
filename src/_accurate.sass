@@ -175,7 +175,7 @@ $aniName: ani-name
 
 
 // before/ after
-// 特別款: 啥都沒有
+// 特別款: 乾淨款
 =b
   &::before
     content: ""
@@ -281,21 +281,17 @@ $aniName: ani-name
 
 
 // 圖片系列
-// 有父層的圖片預設樣式
-=img
-  img
-    width: 100%
-    display: block 
-// 圖片寬度fnc與mixin
+// 圖片寬度 fnc 與 mixin
 @function imgW($imgSize)
   @return _decimal(($imgSize * $SCALE)) + px
 =imgW($imgSize)
   width: _decimal($imgSize * $SCALE) + px
+@function imgWNPx($imgSize)
+  @return _decimal(($imgSize * $SCALE))
 // 圖片盒子高度設定(預設圖片置中置中)，下在img的前一層，使圖片大小等比縮放
 // <html> e.g. .img>img
 =coverImg($thisWidth, $normalImageWidth, $normalImageHeight)
   padding-top: ($thisWidth / ($normalImageWidth / $normalImageHeight)) / ($thisWidth / 100) * 1%
-  width: 100%
   position: relative
   img
     object-fit: cover
@@ -305,6 +301,13 @@ $aniName: ani-name
     width: 100%
     height: 100%
 =coverCubeImg($cubeSize)
+  width: $cubeSize+px
+  height: $cubeSize+px
+  img
+    object-fit: cover
+    width: 100%
+    height: 100%
+=coverCubeImgNPx($cubeSize)
   width: $cubeSize
   height: $cubeSize
   img
@@ -312,8 +315,8 @@ $aniName: ani-name
     width: 100%
     height: 100%
 // 背景圖片高度判定 $scaleWidth-> 瀏覽器寬度
-=bgH($thisWidth, $documentWidth, $normalWidth, $normalHeight)
-  height: _decimal(($documentWidth / 100) * ((($normalHeight * ($thisWidth / $normalWidth))/ ($documentWidth / 100)) / ($documentWidth / 100))) + vw
+=bgH($thisWidth, $parentWidth, $normalWidth, $normalHeight)
+  height: _decimal(($parentWidth / 100) * ((($normalHeight * ($thisWidth / $normalWidth))/ ($parentWidth / 100)) / ($parentWidth / 100))) + vw
 // 背景圖片
 =bgImg($imgName, $imgOtherData...)
   background: url + '(' + $IMG_LOCAL + $imgName + ')'$imgOtherData
@@ -350,28 +353,36 @@ $aniName: ani-name
   width: calc(100% - #{($minusWidth) + px})
 @function mW($minusWidth) 
   @return calc(100% - #{($minusWidth) + px})
+// 正方形排版，要帶尺寸
+=cube($size)
+  width: $size
+  height: $size
 
 
 
-// absolute定位
+// 浮動定位置中
 // 上下左右置中
 =posC($posType: absolute)
   position: $posType
   left: 50%
   top: 50%
   transform: translate(-50%, -50%)
+// 左右置中(由 left 定位)
 =posLC($posType: absolute)
   position: $posType
   left: 50%
   transform: translateX(-50%)
+// 左右置中(由 right 定位)
 =posRC($posType: absolute)
   position: $posType
   right: 50%
   transform: translateX(50%)
+// 上下置中(由 top 定位)
 =posTC($posType: absolute)
   position: $posType
   top: 50%
   transform: translateY(-50%)
+// 上下置中(由 bottom 定位)
 =posBC($posType: absolute)
   position: $posType
   bottom: 50%
