@@ -11,26 +11,34 @@
 
 
 // 初始化設定
-$DOCUMENT_WIDTH: 1920 // 外
-$scaleWidth: 1920 // 內(可以被 W() 汙染更改)
-$ORIGIN_SCALE_WIDTH: $scaleWidth // 內原始寬
-$IMG_LOCAL: 'https://drive.google.com/uc?id=' // 圖片路徑
-$IMG_TYPE: '.png' // 圖片類型
-$HAS_SCROLLBAR: true // 設計稿是否有滾動條
-$exact: false // 尺寸是否絕對精確
-$SCALE: _decimal($ORIGIN_SCALE_WIDTH / $DOCUMENT_WIDTH) // 比例尺
-$IS_FONT_SCALE: false // 是否壓縮文字大小
+// 設計稿是否有滾動條
+$HAS_SCROLLBAR: true 
+// 面相切版的最外寬度
+$DOCUMENT_WIDTH: 1920
+// 面相切版的壓縮寬度，可能作圖 1920，但是用 1366 尺寸做，可以設定成 1366
+// 這樣 $SCALE 就可以直接壓縮圖片尺寸，符合壓縮結果
+$scaleWidth: 1920
+@if $HAS_SCROLLBAR == true
+  $scaleWidth: $scaleWidth - 17
+// 內原始寬
+$ORIGIN_SCALE_WIDTH: $scaleWidth
+// 圖片路徑
+$IMG_LOCAL: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/1451969/'
+// 參閱 bImgT, aImgT, bgImgT 三個語法
+$IMG_TYPE: '.png'
+// 尺寸是否絕對精確
+$exact: false
+// 比例尺，決定 =fz =lh =ls =imgW imgW() 壓縮比例
+$SCALE: _decimal($ORIGIN_SCALE_WIDTH / $DOCUMENT_WIDTH)
 
 
 
-// 個別尺寸, 註bt$xl=1200
+// 個別尺寸，同 bootstrap
 $xl: 1200
 $lg: 992
 $md: 768
 $sm: 576
 $ss: 320
-@if $HAS_SCROLLBAR == true
-  $scaleWidth: $scaleWidth - 17
 
 
 
@@ -44,21 +52,21 @@ $aniName: ani-name
     $i: $index !global
     @content
 // 以下兩個無汙染
-=forch($to, $from: 1)
+=forCh($to, $from: 1)
   @for $index from $from through $to
     $i: $index !global
     +ch($i)
       @content
-=forty($to, $from: 1)
+=forTy($to, $from: 1)
   @for $index from $from through $to
     $i: $index !global
     +ty($i)
       @content
-// 寬度重置及汙染，不建議使用
+// 寬度重置及汙染，請搭配 RE 謹慎使用
 @function W($width)
   $scaleWidth: $width !global
   @return $width
-=RE()
+=RE
   $scaleWidth: $ORIGIN_SCALE_WIDTH !global
 // 動畫函數
 // 聲明 keyframes
@@ -81,16 +89,16 @@ $aniName: ani-name
 =rwd($rwdMaxWidth: $md) 
   @media screen and (max-width: $rwdMaxWidth + px)
     @content
-=rwdmin($rwdMinWidth: $md + 1)
+=rwdMin($rwdMinWidth: $md + 1)
   @media screen and (min-width: $rwdMinWidth + px)
     @content
-=rwdminmax($rwdMinWidth: $sm + 1, $rwdMaxWidth: $md) 
+=rwdMinMax($rwdMinWidth: $sm + 1, $rwdMaxWidth: $md) 
   @media screen and (min-width: $rwdMinWidth + px) and (max-width: $rwdMaxWidth + px)
     @content
 
 
 
-// 判斷是否有 hover 事件 (不建議使用)
+// 判斷是否有 hover 事件 (不常使用)
 =hover
   @media not all and (hover: none), (-ms-high-contrast: none)
     &:hover
@@ -111,10 +119,11 @@ $aniName: ani-name
   // origin: $fontSize + 9
   line-height: ($lineHeight * $SCALE) + px
 =ls($letterSpacing)
-  @if $IS_FONT_SCALE
+  @if $SCALE < 1
     letter-spacing: ($letterSpacing * 0.013) + px
   @else
     letter-spacing: ($letterSpacing * 0.02) + px
+
 
 
 // 子選擇器
@@ -122,44 +131,44 @@ $aniName: ani-name
 =ch($child)
   &:nth-child#{'(' + $child + ')'}
     @content
-=nch($child)
+=nCh($child)
   &:not(:nth-child#{'(' + $child + ')'})
     @content
-=fch
+=fCh
   &:first-child
     @content
-=nfch
+=nfCh
   &:not(:first-child)
     @content
-=lch
+=lCh
   &:last-child
     @content
-=nlch
+=nlCh
   &:not(:last-child)
     @content
-=douch($child1, $child2)
+=douCh($child1, $child2)
   &:nth-child#{'(n + ' + $child1 + ')'}:nth-child#{'(-n + ' + $child2 + ')'}
     @content
 // of-type
 =ty($type)
   &:nth-of-type#{'(' + $type + ')'}
     @content
-=nty($type)
+=nTy($type)
   &:not(:nth-of-type#{'(' + $type + ')'})
     @content
-=fty
+=fTy
   &:first-of-type
     @content
-=nfty
+=nfTy
   &:not(:first-of-type)
     @content
-=lty
+=lTy
   &:last-of-type
     @content
-=nlty
+=nlTy
   &:not(:last-of-type)
     @content
-=douty($type1, $type2)
+=douTy($type1, $type2)
   &:nth-of-type#{'(n + ' + $type1 + ')'}:nth-of-type#{'(-n + ' + $type2 + ')'}
     @content
 
@@ -178,18 +187,18 @@ $aniName: ani-name
     display: inline-block
     @content
 // 文字型
-=btxt($text)
+=bFont($text)
   &::before
     content: "#{$text}"
     display: inline-block
     @content
-=atxt($text)
+=aFont($text)
   &::after
     content: "#{$text}"
     display: inline-block
     @content
 // 背景型
-=bbg($bgColor, $width, $height)
+=bBg($bgColor, $width, $height)
   &::before
     content: ""
     display: inline-block
@@ -197,7 +206,7 @@ $aniName: ani-name
     width: $width
     height: $height
     @content
-=abg($bgColor, $width, $height)
+=aBg($bgColor, $width, $height)
   &::after 
     content: ""
     display: inline-block
@@ -206,7 +215,16 @@ $aniName: ani-name
     height: $height
     @content
 // 圖片型		
-=imgb($imgName, $imgWidth, $imgHeight, $type: $IMG_TYPE)
+=bImg($imgName, $imgWidth, $imgHeight)
+  &::before
+    content: ""
+    display: inline-block
+    background: url + '(' + $IMG_LOCAL + $imgName + ')'no-repeat
+    width: imgw($imgWidth)
+    height: imgw($imgHeight)
+    background-size: 100% 100%
+    @content
+=bImgT($imgName, $imgWidth, $imgHeight, $type: $IMG_TYPE)
   &::before
     content: ""
     display: inline-block
@@ -215,7 +233,16 @@ $aniName: ani-name
     height: imgw($imgHeight)
     background-size: 100% 100%
     @content
-=imga($imgName, $imgWidth, $imgHeight, $type: $IMG_TYPE)
+=aImg($imgName, $imgWidth, $imgHeight, $type: $IMG_TYPE)
+  &::after
+    content: ""
+    display: inline-block
+    background: url + '(' + $IMG_LOCAL + $imgName + ')'no-repeat
+    width: imgw($imgWidth)
+    height: imgw($imgHeight)
+    background-size: 100% 100%
+    @content
+=aImgT($imgName, $imgWidth, $imgHeight, $type: $IMG_TYPE)
   &::after
     content: ""
     display: inline-block
@@ -260,19 +287,13 @@ $aniName: ani-name
     width: 100%
     display: block 
 // 圖片寬度fnc與mixin
-@function imgw($imgSize)
-  @if $scaleWidth == 1366
-    @return _decimal(($imgSize * $SCALE)) + px
-  @else
-    @return $imgSize + px
-=imgw($imgSize)
-  @if $scaleWidth == 1366
-    width: _decimal($imgSize * $SCALE) + px
-  @else
-    width: $imgSize + px
+@function imgW($imgSize)
+  @return _decimal(($imgSize * $SCALE)) + px
+=imgW($imgSize)
+  width: _decimal($imgSize * $SCALE) + px
 // 圖片盒子高度設定(預設圖片置中置中)，下在img的前一層，使圖片大小等比縮放
 // <html> e.g. .img>img
-=coverimg($thisWidth, $normalImageWidth, $normalImageHeight)
+=coverImg($thisWidth, $normalImageWidth, $normalImageHeight)
   padding-top: ($thisWidth / ($normalImageWidth / $normalImageHeight)) / ($thisWidth / 100) * 1%
   width: 100%
   margin: 0 auto
@@ -287,10 +308,12 @@ $aniName: ani-name
     height: 100%
     transform: translate(-50%,-50%)
 // 背景圖片高度判定 $scaleWidth-> 瀏覽器寬度
-=bgh($thisWidth, $normalWidth, $normalHeight, $documentWidth: $scaleWidth)
+=bgH($thisWidth, $documentWidth, $normalWidth, $normalHeight)
   height: _decimal(($documentWidth / 100) * ((($normalHeight * ($thisWidth / $normalWidth))/ ($documentWidth / 100)) / ($documentWidth / 100))) + vw
 // 背景圖片
-=bgimg($imgName, $type: $IMG_TYPE, $imgOtherData...)
+=bgImg($imgName, $imgOtherData...)
+  background: url + '(' + $IMG_LOCAL + $imgName + ')'$imgOtherData
+=bgImgT($imgName, $type: $IMG_TYPE, $imgOtherData...)
   background: url + '(' + $IMG_LOCAL + $imgName + $type + ')'$imgOtherData
 // 簡單線性漸層
 =gradient($bgGradientDirectionMain, $bgGradientData...)
@@ -305,11 +328,11 @@ $aniName: ani-name
 @function w($paddingWidth, $outSize: $scaleWidth)
   @return _decimal($paddingWidth / ($outSize / 100)) * 1%
 // 均分推右邊(child版本)
-=prch($num, $selfWidth, $parentWidth: $scaleWidth)
+=prCh($num, $selfWidth, $parentWidth: $scaleWidth)
   &:not(:nth-child#{'(' + $num + 'n)'})
     margin-right: _decimal((($parentWidth - ($selfWidth * $num)) / ($num - 1)) / ($parentWidth / 100)) * 1%
 // 均分推右邊(child版本)
-=prty($num, $selfWidth, $parentWidth: $scaleWidth)
+=prTy($num, $selfWidth, $parentWidth: $scaleWidth)
   &:not(:nth-of-type#{'(' + $num + 'n)'})
     margin-right: _decimal((($parentWidth - ($selfWidth * $num)) / ($num - 1)) / ($parentWidth / 100)) * 1%
 // vw, vh推距離(預設為1366*974->1920*1080電腦)
@@ -319,33 +342,33 @@ $aniName: ani-name
 @function vh($paddingHeight, $documentHeight: 974)
   @return _decimal(($paddingHeight / ($documentHeight / 100))) + vh
 // 兩欄取寬
-=rw($lw) 
-  width: calc(100% - #{($lw) + px})
-@function rw($lw) 
-  @return calc(100% - #{($lw) + px})
+=mW($minusWidth) 
+  width: calc(100% - #{($minusWidth) + px})
+@function mW($minusWidth) 
+  @return calc(100% - #{($minusWidth) + px})
 
 
 
 // absolute定位
 // 上下左右置中
-=pc($posType: absolute)
+=posC($posType: absolute)
   position: $posType
   left: 50%
   top: 50%
   transform: translate(-50%, -50%)
-=plc($posType: absolute)
+=posLC($posType: absolute)
   position: $posType
   left: 50%
   transform: translateX(-50%)
-=prc($posType: absolute)
+=posRC($posType: absolute)
   position: $posType
   right: 50%
   transform: translateX(50%)
-=ptc($posType: absolute)
+=posTC($posType: absolute)
   position: $posType
   top: 50%
   transform: translateY(-50%)
-=pbc($posType: absolute)
+=posBC($posType: absolute)
   position: $posType
   bottom: 50%
   transform: translateY(50%)
