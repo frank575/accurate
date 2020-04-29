@@ -220,8 +220,8 @@ $aniName: ani-name
     content: ""
     display: inline-block
     background: url + '(' + $IMG_LOCAL + $imgName + ')'no-repeat
-    width: imgw($imgWidth)
-    height: imgw($imgHeight)
+    width: imgW($imgWidth)
+    height: imgW($imgHeight)
     background-size: 100% 100%
     @content
 =bImgT($imgName, $imgWidth, $imgHeight, $type: $IMG_TYPE)
@@ -229,8 +229,8 @@ $aniName: ani-name
     content: ""
     display: inline-block
     background: url + '(' + $IMG_LOCAL + $imgName + $type + ')'no-repeat
-    width: imgw($imgWidth)
-    height: imgw($imgHeight)
+    width: imgW($imgWidth)
+    height: imgW($imgHeight)
     background-size: 100% 100%
     @content
 =aImg($imgName, $imgWidth, $imgHeight, $type: $IMG_TYPE)
@@ -238,8 +238,8 @@ $aniName: ani-name
     content: ""
     display: inline-block
     background: url + '(' + $IMG_LOCAL + $imgName + ')'no-repeat
-    width: imgw($imgWidth)
-    height: imgw($imgHeight)
+    width: imgW($imgWidth)
+    height: imgW($imgHeight)
     background-size: 100% 100%
     @content
 =aImgT($imgName, $imgWidth, $imgHeight, $type: $IMG_TYPE)
@@ -247,8 +247,8 @@ $aniName: ani-name
     content: ""
     display: inline-block
     background: url + '(' + $IMG_LOCAL + $imgName + $type + ')'no-repeat
-    width: imgw($imgWidth)
-    height: imgw($imgHeight)
+    width: imgW($imgWidth)
+    height: imgW($imgHeight)
     background-size: 100% 100%
     @content
 
@@ -323,8 +323,10 @@ $aniName: ani-name
 =bgImgT($imgName, $type: $IMG_TYPE, $imgOtherData...)
   background: url + '(' + $IMG_LOCAL + $imgName + $type + ')'$imgOtherData
 // 簡單線性漸層
-=gradient($bgGradientDirectionMain, $bgGradientData...)
-  background: linear-gradient(to $bgGradientDirectionMain, $bgGradientData)
+=gradient($bgGradientDirection, $bgGradientData...)
+  background: linear-gradient(to $bgGradientDirection, $bgGradientData)
+@function gradient($bgGradientDirection, $bgGradientData...)
+  @return linear-gradient(to $bgGradientDirection, $bgGradientData)
 
 
 
@@ -402,5 +404,14 @@ $aniName: ani-name
 =gradientTextStroke($color, $strokeWidth: 2, $textFillColor: #fff)
   background: $color
   -webkit-text-fill-color: $textFillColor
-  -webkit-text-stroke: $strokeWidth transparent
+  -webkit-text-stroke: $strokeWidth + px transparent
   -webkit-background-clip: text
+
+
+
+// 清除預設顯示模式
+=reAppear
+  appearance: none
+  -moz-appearance: none
+  -ms-progress-appearance: none
+  -webkit-appearance: none
