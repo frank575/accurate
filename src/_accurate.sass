@@ -128,48 +128,48 @@ $aniName: ani-name
 
 // 子選擇器
 // child
-=ch($child)
-  &:nth-child#{'(' + $child + ')'}
+=ch($index)
+  &:nth-child#{'(' + $index + ')'}
     @content
-=nCh($child)
-  &:not(:nth-child#{'(' + $child + ')'})
+=nCh($index)
+  &:not(:nth-child#{'(' + $index + ')'})
     @content
 =fCh
   &:first-child
     @content
-=nfCh
+=nFCh
   &:not(:first-child)
     @content
 =lCh
   &:last-child
     @content
-=nlCh
+=nLCh
   &:not(:last-child)
     @content
-=douCh($child1, $child2)
-  &:nth-child#{'(n + ' + $child1 + ')'}:nth-child#{'(-n + ' + $child2 + ')'}
+=douCh($index1, $index2)
+  &:nth-child#{'(n + ' + $index1 + ')'}:nth-child#{'(-n + ' + $index2 + ')'}
     @content
 // of-type
-=ty($type)
-  &:nth-of-type#{'(' + $type + ')'}
+=ty($index)
+  &:nth-of-type#{'(' + $index + ')'}
     @content
-=nTy($type)
-  &:not(:nth-of-type#{'(' + $type + ')'})
+=nTy($index)
+  &:not(:nth-of-type#{'(' + $index + ')'})
     @content
 =fTy
   &:first-of-type
     @content
-=nfTy
+=nFTy
   &:not(:first-of-type)
     @content
 =lTy
   &:last-of-type
     @content
-=nlTy
+=nLTy
   &:not(:last-of-type)
     @content
-=douTy($type1, $type2)
-  &:nth-of-type#{'(n + ' + $type1 + ')'}:nth-of-type#{'(-n + ' + $type2 + ')'}
+=douTy($index1, $index2)
+  &:nth-of-type#{'(n + ' + $index1 + ')'}:nth-of-type#{'(-n + ' + $index2 + ')'}
     @content
 
 
